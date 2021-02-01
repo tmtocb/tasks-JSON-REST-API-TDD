@@ -1,0 +1,20 @@
+language: ruby
+cache:
+  - bundler
+  - yarn
+services:
+  - postgresql
+before_install:
+  - nvm install --lts
+before_script:
+  - bundle install --jobs=3 --retry=3
+  - bundle config set deployment 'true'
+  - yarn
+  - bundle exec rake db:create
+  - bundle exec rake db:schema:load
+  - gem install bundle-audit
+  - bundle-audit update
+script:
+  - bundle exec rake spec 
+  - bundle exec brakeman -z
+  - bundle-audit 
