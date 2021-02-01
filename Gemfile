@@ -12,7 +12,6 @@ gem 'strong_migrations'
 group :development, :test do
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'brakeman'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'guard'
   gem 'guard-rspec', require: false
@@ -20,7 +19,9 @@ group :development, :test do
 end
 
 group :development do
+  gem 'brakeman'
   gem 'bullet'
+  gem 'bundler-audit'
   gem 'listen', '~> 3.2'
   gem 'pry-rails'
   gem 'spring'
