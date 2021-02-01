@@ -210,6 +210,8 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    strong_migrations (0.7.6)
+      activerecord (>= 5)
     thor (1.1.0)
     thread_safe (0.3.6)
     tzinfo (1.2.9)
@@ -243,6 +245,7 @@ DEPENDENCIES
   shoulda-matchers (~> 4.0)
   spring
   spring-watcher-listen (~> 2.0.0)
+  strong_migrations
 
 RUBY VERSION
    ruby 2.7.2p137
