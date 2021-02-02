@@ -1,6 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe Task, type: :model do
-  it { is_expected.to have_db_column(:title) }
-  it { is_expected.to have_db_column(:created_by) }
+
+  describe '#columns' do
+    it { is_expected.to have_db_column(:title) }
+    it { is_expected.to have_db_column(:created_by) }
+  end
+
+  describe '#validations' do
+    it { should validate_presence_of(:title) }
+    it { should validate_presence_of(:created_by) }
+  end
 end
