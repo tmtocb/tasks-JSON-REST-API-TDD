@@ -3,7 +3,7 @@ module V1
     before_action :set_task, only: [:show, :update, :destroy]
 
     def index
-      @tasks = current_user.tasks
+      @tasks = current_user.tasks.paginate(page: params[:page], per_page: 10)
       json_response(@tasks)
     end
 
