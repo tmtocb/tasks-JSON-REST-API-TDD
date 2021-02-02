@@ -2,12 +2,12 @@ class TasksController < ApplicationController
   before_action :set_task, only: [:show, :update, :destroy]
 
   def index
-    @tasks = Task.all
+    @tasks = current_user.tasks
     json_response(@tasks)
   end
 
   def create
-    @task = Task.create!(task_params)
+    @task = current_user.tasks.create!(task_params)
     json_response(@task, :created)
   end
 
@@ -28,7 +28,7 @@ class TasksController < ApplicationController
   private
 
   def task_params
-    params.permit(:title, :created_by)
+    params.permit(:title)
   end
 
   def set_task

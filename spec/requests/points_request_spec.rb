@@ -1,13 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe "Points API", type: :request do
-  let!(:task) { create(:task) }
+  let(:user) { create(:user) }
+  let!(:task) { create(:task, created_by: user.id) }
   let!(:points) { create_list(:point, 20, task_id: task.id) }
   let(:task_id) { task.id }
   let(:id) { points.first.id }
+  let(:headers) { valid_headers }
                      
   describe 'GET index' do
-    before { get "/tasks/#{task_id}/points" }
+    before { get "/tasks/#{task_id}/points", params: {}, headers: headers }
 
     context 'when task exists' do
       it 'returns status code 200' do
@@ -33,7 +35,7 @@ RSpec.describe "Points API", type: :request do
   end
 
   describe 'GET show' do
-    before { get "/tasks/#{task_id}/points/#{id}" }
+    before { get "/tasks/#{task_id}/points/#{id}", params: {}, headers: headers }
 
     context 'when task point exists' do
       it 'returns status code 200' do
@@ -59,10 +61,10 @@ RSpec.describe "Points API", type: :request do
   end
 
   describe 'POST create' do
-    let(:valid_attributes) { { name: 'Rails', done: false } }
+    let(:valid_attributes) { { name: 'Rails', done: false }.to_json }
 
     context 'when request attributes are valid' do
-      before { post "/tasks/#{task_id}/points", params: valid_attributes }
+      before { post "/tasks/#{task_id}/points", params: valid_attributes, headers: headers }
 
       it 'returns status code 201' do
         expect(response).to have_http_status(201)
@@ -70,7 +72,7 @@ RSpec.describe "Points API", type: :request do
     end
 
     context 'when an invalid request' do
-      before { post "/tasks/#{task_id}/points", params: {} }
+      before { post "/tasks/#{task_id}/points", params: {}, headers: headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -83,9 +85,9 @@ RSpec.describe "Points API", type: :request do
   end
 
   describe 'PUT update' do
-    let(:valid_attributes) { { name: 'Laravel' } }
+    let(:valid_attributes) { { name: 'Laravel' }.to_json }
 
-    before { put "/tasks/#{task_id}/points/#{id}", params: valid_attributes }
+    before { put "/tasks/#{task_id}/points/#{id}", params: valid_attributes, headers: headers }
 
     context 'when point exists' do
       it 'returns status code 204' do
@@ -112,7 +114,7 @@ RSpec.describe "Points API", type: :request do
   end
 
   describe 'DELETE destroy' do
-    before { delete "/tasks/#{task_id}/points/#{id}" }
+    before { delete "/tasks/#{task_id}/points/#{id}", params: {}, headers: headers }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
