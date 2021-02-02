@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe "Tasks API", type: :request do
-
-  let!(:tasks) { create_list(:task, 10) } 
+  let(:user) { create(:user) }
+  let!(:tasks) { create_list(:task, 10, created_by: user.id) } 
   let(:task_id) { tasks.first.id }
+  let(:headers) { valid_headers }
 
-  describe 'GET index' do
-    before { get '/tasks' }
-
+  describe 'GET /tasks' do
+    before { get '/tasks', params: {}, headers: headers }
     it 'returns all tasks' do
       expect(json).not_to be_empty
       expect(json.size).to eq(10)
@@ -19,7 +19,7 @@ RSpec.describe "Tasks API", type: :request do
   end
 
   describe 'GET show' do
-    before { get "/tasks/#{task_id}" }
+    before { get "/tasks/#{task_id}", headers: headers }
 
     context 'when the task exists' do
       it 'returns the task' do
@@ -46,10 +46,12 @@ RSpec.describe "Tasks API", type: :request do
     end
 
   describe 'POST create' do
-    let(:valid_attributes) { { title: 'Learn Rails', created_by: '1' } }
+    let(:valid_attributes) do
+      { title: 'Learn Rails', created_by: '1' }.to_json
+    end
 
     context 'when the request is valid' do
-      before { post '/tasks', params: valid_attributes }
+      before { post '/tasks', params: valid_attributes, headers: headers  }
 
       it 'creates a task' do
         expect(json['title']).to eq('Learn Rails')
@@ -61,23 +63,24 @@ RSpec.describe "Tasks API", type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/tasks', params: { title: 'Not This Way' } }
+      let(:invalid_attributes) { { title: nil }.to_json }
+      before { post '/tasks', params: invalid_attributes, headers: headers }
 
       it 'returns 422 http code' do
         expect(response).to have_http_status(422)
       end
 
       it 'returns a validation failure message' do
-        expect(response.body)
-          .to match(/Validation failed: Created by can't be blank/)
+        expect(json['message'])
+          .to match(/Validation failed: Title can't be blank/)
       end
     end
   end
 
   describe 'PUT update' do
-    let(:valid_attributes) { { title: 'Learn RSpec' } }
+    let(:valid_attributes) { { title: 'Learn RSpec' }.to_json }
     context 'when the record exists' do
-      before { put "/tasks/#{task_id}", params: valid_attributes }
+      before { put "/tasks/#{task_id}", params: valid_attributes, headers: headers }
 
       it 'updates the record' do
         expect(response.body).to be_empty
@@ -90,7 +93,7 @@ RSpec.describe "Tasks API", type: :request do
   end
 
   describe 'DELETE destroy' do
-    before { delete "/tasks/#{task_id}" }
+    before { delete "/tasks/#{task_id}", params: {}, headers: headers }
 
     it 'returns 204 http code' do
       expect(response).to have_http_status(204)
