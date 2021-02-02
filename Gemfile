@@ -15,6 +15,7 @@ gem 'puma', '~> 4.1'
 gem 'rails', '~> 6.0.3', '>= 6.0.3.4'
 gem 'rubocop', require: false
 gem 'strong_migrations'
+gem 'will_paginate', '~> 3.1.0'
 
 group :development, :test do
   gem 'better_errors'
