@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Points API", type: :request do
+RSpec.describe "V1::Points API", type: :request do
   let(:user) { create(:user) }
   let!(:task) { create(:task, created_by: user.id) }
   let!(:points) { create_list(:point, 20, task_id: task.id) }
