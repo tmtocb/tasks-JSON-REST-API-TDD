@@ -11,4 +11,8 @@ RSpec.describe Task, type: :model do
     it { should validate_presence_of(:title) }
     it { should validate_presence_of(:created_by) }
   end
+
+  describe '#associations' do
+    it { should have_many(:points).dependent(:destroy) }
+  end
 end
